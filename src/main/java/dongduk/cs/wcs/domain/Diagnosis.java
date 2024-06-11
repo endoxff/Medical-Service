@@ -40,4 +40,15 @@ public class Diagnosis {
     private byte[] secretKey;
 
     private LocalDateTime createdAt;
+
+    public Diagnosis(Member sender, Member receiver, Type type,
+                     byte[] data, byte[] signature, byte[] secretKey, LocalDateTime createdAt) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.type = type;
+        this.data = data;
+        this.signature = signature;
+        this.secretKey = secretKey;
+        this.createdAt = createdAt;
+    }
 }

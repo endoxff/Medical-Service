@@ -14,6 +14,7 @@ import dongduk.cs.wcs.security.SecretKeyManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -49,7 +50,7 @@ public class MemberService implements UserDetailsService {
 
         // Public Key & Private Key 생성 및 저장
         KeyPairManager keyPairManager = new KeyPairManager();
-        String privateKeyFileName = request.getId() + "_public.key";
+        String privateKeyFileName = request.getId() + "_private.key";
         keyPairManager.create();
         keyPairManager.save(privateKeyFileName);
 
@@ -93,7 +94,7 @@ public class MemberService implements UserDetailsService {
 
         // Public Key & Private Key 생성 및 저장
         KeyPairManager keyPairManager = new KeyPairManager();
-        String privateKeyFileName = request.getId() + "_public.key";
+        String privateKeyFileName = request.getId() + "_private.key";
         keyPairManager.create();
         keyPairManager.save(privateKeyFileName);
 
@@ -167,6 +168,7 @@ public class MemberService implements UserDetailsService {
 
         Member member = optionalMember.get();
         List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new User(member.getId(), member.getPassword(), authorities);
     }

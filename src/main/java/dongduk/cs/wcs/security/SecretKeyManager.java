@@ -2,11 +2,11 @@ package dongduk.cs.wcs.security;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 public class SecretKeyManager {
     private final String algorithm = "AES";
@@ -37,5 +37,26 @@ public class SecretKeyManager {
         }
 
         return false;
+    }
+
+    public SecretKey load(String fileName) {
+        try (FileInputStream fis = new FileInputStream(fileName)) {
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                Object obj = ois.readObject();
+                secretKey = (SecretKey) obj;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return secretKey;
+    }
+
+    public Key encode(byte[] bytes) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        return new SecretKeySpec(bytes, algorithm);
     }
 }

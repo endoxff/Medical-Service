@@ -1,12 +1,12 @@
 package dongduk.cs.wcs.security;
 
 import lombok.Getter;
+import org.springframework.security.core.parameters.P;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 
 public class KeyPairManager {
     private final String algorithm = "RSA";
@@ -43,5 +43,29 @@ public class KeyPairManager {
         }
 
         return false;
+    }
+
+    public Key load(String fileName) {
+        Key key = null;
+        try (FileInputStream fis = new FileInputStream(fileName)) {
+            try (ObjectInputStream ois = new ObjectInputStream(fis)) {
+                Object obj = ois.readObject();
+                key = (Key) obj;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return key;
+    }
+
+    public Key encode(byte[] bytes) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        Key key = KeyFactory.getInstance(algorithm).generatePublic(new X509EncodedKeySpec(bytes));
+
+        return key;
     }
 }

@@ -1,7 +1,6 @@
 package dongduk.cs.wcs.security;
 
 import lombok.Getter;
-import org.springframework.security.core.parameters.P;
 
 import java.io.*;
 import java.security.*;
@@ -19,8 +18,13 @@ public class KeyPairManager {
     @Getter
     private PrivateKey privateKey;
 
-    public KeyPair create() throws NoSuchAlgorithmException {
-        keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+    public KeyPair create() {
+        keyPairGenerator = null;
+        try {
+            keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+        } catch(NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         keyPairGenerator.initialize(keySize);
 
         keyPair = keyPairGenerator.generateKeyPair();
@@ -63,8 +67,15 @@ public class KeyPairManager {
         return key;
     }
 
-    public Key encode(byte[] bytes) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        Key key = KeyFactory.getInstance(algorithm).generatePublic(new X509EncodedKeySpec(bytes));
+    public Key encode(byte[] bytes) {
+        Key key = null;
+        try {
+            key = KeyFactory.getInstance(algorithm).generatePublic(new X509EncodedKeySpec(bytes));
+        } catch(NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch(InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
         return key;
     }

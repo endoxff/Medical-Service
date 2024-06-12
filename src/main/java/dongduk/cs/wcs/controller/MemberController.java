@@ -20,17 +20,17 @@ import java.security.NoSuchAlgorithmException;
 public class MemberController {
     private final MemberService memberService;
 
-    /* 환자 회원 가입 Form */
+    // 환자 회원 가입 Form
     @GetMapping("/signup/patient")
     public String patientSignupForm(Model model) {
         model.addAttribute("signupForm", new MemberReqDto.PatientSignupReqDto());
         return "patient_signup_form";
     }
 
-    /* 환자 회원 가입 */
+    // 환자 회원 가입
     @PostMapping("/signup/patient")
     public String patientSignup(@Valid @ModelAttribute("signupForm") MemberReqDto.PatientSignupReqDto request,
-                                BindingResult bindingResult) throws NoSuchAlgorithmException {
+                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "patient_signup_form";
         }
@@ -40,17 +40,17 @@ public class MemberController {
         return "redirect:/";
     }
 
-    /* 의사 회원 가입 Form */
+    // 의사 회원 가입 Form
     @GetMapping("/signup/doctor")
     public String doctorSignupForm(Model model) {
         model.addAttribute("signupForm", new MemberReqDto.DoctorSignupReqDto());
         return "doctor_signup_form";
     }
 
-    /* 의사 회원 가입 */
+    // 의사 회원 가입
     @PostMapping("/signup/doctor")
     public String doctorSignup(@Valid @ModelAttribute("signupForm") MemberReqDto.DoctorSignupReqDto request,
-                               BindingResult bindingResult) throws NoSuchAlgorithmException {
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "doctor_signup_form";
         }
@@ -60,7 +60,7 @@ public class MemberController {
         return "redirect:/";
     }
 
-    /* 로그인 Form */
+    // 로그인 Form
     @GetMapping("/login")
     public String loginForm() {
         return "login_form";

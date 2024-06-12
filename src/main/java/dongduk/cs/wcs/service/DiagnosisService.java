@@ -24,6 +24,7 @@ import javax.crypto.SecretKey;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -33,15 +34,14 @@ public class DiagnosisService {
     private final DoctorRepository doctorRepository;
     private final DiagnosisRepository diagnosisRepository;
 
-    /* 의사 목록 */
+    // 의사 목록
     public List<Doctor> findAllDoctors() {
         return doctorRepository.findAll();
     }
 
-    /* 진료 요청 */
+    // 진료 요청
     @Transactional
-    public Diagnosis diagnosisRequest(String id, DiagnosisReqDto.DiagnosisRequestReqDto request)
-            throws NoSuchAlgorithmException, SignatureException, InvalidKeyException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    public Diagnosis diagnosisRequest(String id, DiagnosisReqDto.DiagnosisRequestReqDto request) {
         // Sender Private Key 정보
         Member sender = memberRepository.getReferenceById(id);
         KeyPairManager keyPairManager = new KeyPairManager();
@@ -72,14 +72,13 @@ public class DiagnosisService {
         return diagnosisRepository.save(diagnosis);
     }
 
-    /* 진료 요청 목록 */
+    // 진료 요청 목록
     public List<Diagnosis> findAllDiagnosis(String id) {
         return diagnosisRepository.findByReceiverId(id);
     }
 
-    /* 진료 요청 확인 */
-    public DiagnosisResDto.DiagnosisRequestResDto diagnosisRequestCheck(Long id)
-            throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, InvalidKeySpecException, SignatureException {
+    // 진료 요청 확인
+    public DiagnosisResDto.DiagnosisRequestResDto diagnosisRequestCheck(Long id) {
         // 전자 봉투 정보
         Diagnosis diagnosis = diagnosisRepository.getReferenceById(id);
 
@@ -92,6 +91,7 @@ public class DiagnosisService {
         byte[] byteSecretKey = digitalEnvelopeManager.decrypt(diagnosis.getSecretKey(), privateKey);
         SecretKeyManager secretKeyManager = new SecretKeyManager();
         SecretKey secretKey = (SecretKey) secretKeyManager.encode(byteSecretKey);
+        Arrays.fill(byteSecretKey, (byte)0);
 
         // Digital Envelope의 Data, Signature 복호화
         byte[] data = digitalEnvelopeManager.decrypt(diagnosis.getData(), secretKey);
@@ -101,6 +101,8 @@ public class DiagnosisService {
         // Signature 검증
         DigitalSignatureManager digitalSignatureManager = new DigitalSignatureManager();
         boolean verify = digitalSignatureManager.verify(data, signature, publicKey);
+        Arrays.fill(data, (byte)0);
+        Arrays.fill(signature, (byte)0);
 
         return new DiagnosisResDto.DiagnosisRequestResDto(diagnosis.getSender().getName(), new String(data), verify, diagnosis.getCreatedAt());
     }

@@ -19,4 +19,16 @@ public class DiagnosisReqDto {
         @NotBlank(message = "증상을 입력해주세요.")
         private String symptom;
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DiagnosisResponseReqDto {
+        @NotNull(message = "환자를 선택해주세요.")
+        private String receiver;
+
+        @NotBlank(message = "증상을 입력해주세요.")
+        private String prescription;
+    }
 }

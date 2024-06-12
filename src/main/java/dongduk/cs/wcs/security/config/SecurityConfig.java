@@ -18,10 +18,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
        http
                .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                       .requestMatchers("/**").permitAll()
-                       .requestMatchers("/member/login").permitAll()
-                       .requestMatchers("/member/logout").permitAll()
-                       .requestMatchers("/h2-console/**").permitAll())
+                       .requestMatchers("/**").permitAll())
                .formLogin((formLogin) -> formLogin
                        .loginPage("/member/login")
                        .defaultSuccessUrl("/"))

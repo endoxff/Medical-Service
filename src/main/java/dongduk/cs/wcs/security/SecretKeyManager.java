@@ -6,7 +6,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 public class SecretKeyManager {
     private final String algorithm = "AES";
@@ -15,8 +14,13 @@ public class SecretKeyManager {
     private KeyGenerator keyGenerator;
     private SecretKey secretKey;
 
-    public SecretKey create() throws NoSuchAlgorithmException {
-        keyGenerator = KeyGenerator.getInstance(algorithm);
+    public SecretKey create() {
+        keyGenerator = null;
+        try {
+            keyGenerator = KeyGenerator.getInstance(algorithm);
+        } catch(NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         keyGenerator.init(keySize);
 
         secretKey = keyGenerator.generateKey();
@@ -56,7 +60,7 @@ public class SecretKeyManager {
         return secretKey;
     }
 
-    public Key encode(byte[] bytes) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    public Key encode(byte[] bytes) {
         return new SecretKeySpec(bytes, algorithm);
     }
 }

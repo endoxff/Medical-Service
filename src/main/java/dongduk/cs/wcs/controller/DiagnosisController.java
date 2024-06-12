@@ -28,7 +28,7 @@ import java.util.List;
 public class DiagnosisController {
     private final DiagnosisService diagnosisService;
 
-    /* 진료 요청 Form */
+    // 진료 요청 Form
     @GetMapping("/request")
     public String diagnosisRequestForm(Model model) {
         List<Doctor> doctors = diagnosisService.findAllDoctors();
@@ -38,10 +38,10 @@ public class DiagnosisController {
         return "diagnosis_request_form";
     }
 
-    /* 진료 요청 */
+    // 진료 요청
     @PostMapping("/request")
-    public String diagnosisReqest(@Valid @ModelAttribute("requestDiagnosisForm")DiagnosisReqDto.DiagnosisRequestReqDto request, BindingResult bindingResult, Principal principal)
-            throws NoSuchAlgorithmException, SignatureException, InvalidKeySpecException, InvalidKeyException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    public String diagnosisReqest(@Valid @ModelAttribute("requestDiagnosisForm")DiagnosisReqDto.DiagnosisRequestReqDto request,
+                                  BindingResult bindingResult, Principal principal) {
         if (bindingResult.hasErrors()) {
             System.out.println(bindingResult.getAllErrors());
             System.out.println(request.getReceiver());
@@ -53,7 +53,7 @@ public class DiagnosisController {
         return "redirect:/";
     }
 
-    /* 진료 요청 확인 */
+    // 진료 요청 확인
     @GetMapping("/request/list")
     public String diagnosisRequestCheck(Model model, Principal principal) {
         List<Diagnosis> diagnosisList = diagnosisService.findAllDiagnosis(principal.getName());
@@ -62,10 +62,9 @@ public class DiagnosisController {
         return "diagnosis_request_check";
     }
 
-    /* 진료 요청 세부 확인 */
+    // 진료 요청 세부 확인
     @GetMapping("/request/detail/{id}")
-    public String diagnosisRequestDetailCheckForm(@PathVariable Long id, Model model)
-            throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeySpecException, SignatureException, InvalidKeyException {
+    public String diagnosisRequestDetailCheckForm(@PathVariable Long id, Model model) {
         DiagnosisResDto.DiagnosisRequestResDto diagnosis = diagnosisService.diagnosisRequestCheck(id);
         model.addAttribute("diagnosis", diagnosis);
 

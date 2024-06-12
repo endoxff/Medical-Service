@@ -34,9 +34,9 @@ public class MemberService implements UserDetailsService {
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /* 환자 회원 가입 */
+    // 환자 회원 가입
     @Transactional
-    public Patient patientSignup(MemberReqDto.PatientSignupReqDto request) throws NoSuchAlgorithmException {
+    public Patient patientSignup(MemberReqDto.PatientSignupReqDto request) {
         // 아이디 중복 확인
         if (!checkId(request.getId())) {
             throw new RuntimeException("해당 아이디는 이미 존재합니다.");
@@ -78,9 +78,9 @@ public class MemberService implements UserDetailsService {
         return patient;
     }
 
-    /* 의사 회원 가입 */
+    // 의사 회원 가입
     @Transactional
-    public Doctor doctorSignup(MemberReqDto.DoctorSignupReqDto request) throws NoSuchAlgorithmException {
+    public Doctor doctorSignup(MemberReqDto.DoctorSignupReqDto request) {
         // 아이디 중복 확인
         if (!checkId(request.getId())) {
             throw new RuntimeException("해당 아이디는 이미 존재합니다.");
@@ -145,7 +145,7 @@ public class MemberService implements UserDetailsService {
         return doctor;
     }
 
-    /* 아이디 중복 확인 */
+    // 아이디 중복 확인
     public boolean checkId(String id) {
         Optional<Member> member = memberRepository.findById(id);
 
@@ -156,7 +156,7 @@ public class MemberService implements UserDetailsService {
         return true;
     }
 
-    /* 로그인 */
+    // 로그인
     @Override
     public UserDetails loadUserByUsername(String username) throws RuntimeException {
         Optional<Member> optionalMember = this.memberRepository.findById(username);

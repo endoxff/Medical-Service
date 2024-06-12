@@ -7,21 +7,45 @@ public class DigitalSignatureManager {
 
     private Signature signature;
 
-    public byte[] sign(PrivateKey privateKey, String data)
-            throws NoSuchAlgorithmException, SignatureException, InvalidKeyException {
-        signature = Signature.getInstance(signAlgorithm);
-        signature.initSign(privateKey);
-        signature.update(data.getBytes());
+    public byte[] sign(PrivateKey privateKey, String data) {
+        signature = null;
+        byte[] result = null;
 
-        return signature.sign();
+        try {
+            signature = Signature.getInstance(signAlgorithm);
+            signature.initSign(privateKey);
+            signature.update(data.getBytes());
+            result = signature.sign();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } finally {
+            if (result == null) {
+                result = new byte[0];
+            }
+        }
+
+        return result;
     }
 
-    public boolean verify(byte[] data, byte[] sign, PublicKey publicKey)
-            throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        signature = Signature.getInstance(signAlgorithm);
-        signature.initVerify(publicKey);
-        signature.update(data);
+    public boolean verify(byte[] data, byte[] sign, PublicKey publicKey) {
+        boolean result = false;
+        try {
+            signature = Signature.getInstance(signAlgorithm);
+            signature.initVerify(publicKey);
+            signature.update(data);
+            result = signature.verify(sign);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        }
 
-        return signature.verify(sign);
+        return result;
     }
 }
